@@ -1,6 +1,7 @@
 import {Platforms} from '../../util/Platforms';
 import {AppRuntime} from '../../AppRuntime';
 import {shell} from 'electron';
+import {TabNavs} from '../tabs/TabNavs';
 
 export class Nav {
 
@@ -12,19 +13,31 @@ export class Nav {
 
     public static openLinkWithNewTab(link: string) {
 
-        if (AppRuntime.isBrowser()) {
+        TabNavs.openLinkWithNewTab(link);
 
-            const win = window.open(link, '_blank');
-
-            if (win) {
-                win.focus();
-            }
-
-        } else {
-            shell.openExternal(link)
-                .catch(err => console.error(err));
-
-        }
+        // if (Platforms.type() === 'mobile') {
+        //     // on mobile devices we shouldn't open a new tab
+        //     document.location.href = link;
+        //     return;
+        // }
+        //
+        // if (AppRuntime.isBrowser()) {
+        //
+        //     const win = window.open(link, '_blank');
+        //
+        //     if (win) {
+        //         win.focus();
+        //     }
+        //
+        // } else {
+        //
+        //     TabNavs.openLinkWithNewTab(link);
+        //
+        //     // FIXME: use the selector for this.
+        //     // shell.openExternal(link)
+        //     //     .catch(err => console.error(err));
+        //
+        // }
 
     }
 
@@ -51,26 +64,28 @@ class DesktopLinkLoader implements LinkLoader {
 
     constructor(opts: LinkLoaderOpts) {
 
-        const win = window.open('', '_blank');
-
-        if (win) {
-
-            this.win = win;
-
-            if (opts.focus) {
-                win.focus();
-            }
-
-            win.document.write("Loading...");
-
-        } else {
-            throw new Error("Unable to create window");
-        }
+        // const win = window.open('', '_blank');
+        //
+        // if (win) {
+        //
+        //     this.win = win;
+        //
+        //     if (opts.focus) {
+        //         win.focus();
+        //     }
+        //
+        //     win.document.write("Loading...");
+        //
+        // } else {
+        //     throw new Error("Unable to create window");
+        // }
 
     }
 
     public load(link: string): void {
-        this.win.location.href = link;
+        TabNavs.openLinkWithNewTab(link);
+        //
+        // this.win.location.href = link;
     }
 
 }

@@ -22,11 +22,11 @@ export class DocLoader implements IDocLoader {
 
     public create(loadDocRequest: LoadDocRequest): IDocLoadRequest {
 
-        if (DistRuntime.get() === 'electron') {
-            return this.electronDocLoader.create(loadDocRequest);
-        } else {
+        // if (DistRuntime.get() === 'electron') {
+        //     return this.electronDocLoader.create(loadDocRequest);
+        // } else {
             return this.browserDocLoader.create(loadDocRequest);
-        }
+        // }
 
     }
 

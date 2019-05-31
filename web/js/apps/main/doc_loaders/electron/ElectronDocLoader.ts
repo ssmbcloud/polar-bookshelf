@@ -28,6 +28,7 @@ export class ElectronDocLoader implements IDocLoader {
                 Preconditions.assertPresent(loadDocRequest.backendFileRef, "backendFileRef");
                 Preconditions.assertPresent(loadDocRequest.backendFileRef.name, "backendFileRef.name");
 
+                // TODO We need to remove this and not use IPC any longer..
                 await ipcClient.execute('/main/load-doc', loadDocRequest);
 
             }

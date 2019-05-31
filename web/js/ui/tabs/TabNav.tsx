@@ -1,3 +1,5 @@
+import {TabNavs} from './TabNavs';
+
 import * as React from 'react';
 import Nav from 'reactstrap/lib/Nav';
 import NavItem from 'reactstrap/lib/NavItem';
@@ -11,13 +13,14 @@ import {Either} from '../../util/Either';
 import {Tuples} from '../../util/Tuples';
 import {IEntryContext} from '../../util/Tuples';
 import {Arrays} from '../../util/Arrays';
+import {OpenLinkWithNewTabMessage} from './TabNavs';
+import {Logger} from '../../logger/Logger';
 
 let tabSequence: number = 0;
 
-// TODO
-//
-// - fit the screen properly including the webview content
-//   next and up do not work.. I need uniform wrapping
+const log = Logger.create();
+
+// FIXME: add 'page-title-updated' event to webview.addEventListener
 
 export class TabNav extends React.Component<IProps, IState> {
 
@@ -50,6 +53,36 @@ export class TabNav extends React.Component<IProps, IState> {
             tabs
         };
 
+        const handleMessage = (event: MessageEvent) => {
+
+            if (event.data.type === TabNavs.CHANNEL) {
+
+                const message: OpenLinkWithNewTabMessage = event.data;
+
+                const newTab: Tab = {
+                    id: tabSequence++,
+                    title: "No Title Yet",
+                    content: message.link
+                };
+
+                const tabs = [...this.state.tabs, newTab];
+
+                this.setState({...this.state, activeTab: newTab.id, tabs});
+
+            }
+
+        };
+
+        window.addEventListener("message", event => {
+
+            try {
+                handleMessage(event);
+            } catch (e) {
+                log.error("Unable to handle message: ", e);
+            }
+
+        });
+
         window.addEventListener('keydown', event => this.onKeyDown(event));
 
     }
@@ -77,8 +110,6 @@ export class TabNav extends React.Component<IProps, IState> {
     }
 
     public render() {
-
-        console.log("FIXME render");
 
         const NavTabs = () => {
 

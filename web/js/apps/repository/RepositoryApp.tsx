@@ -226,8 +226,12 @@ export class RepositoryApp {
                                 </div>
                             },
                             {
-                                title: "How to be Successful",
-                                content: "http://localhost:8500/htmlviewer/webview.html"
+                                title: "Example Tab 1",
+                                content: "https://www.msnbc.com"
+                            },
+                            {
+                                title: "Example Tab 2",
+                                content: "https://reddit.com"
                             }
                         ]}/>
 
