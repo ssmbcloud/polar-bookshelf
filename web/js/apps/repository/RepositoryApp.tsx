@@ -200,54 +200,19 @@ export class RepositoryApp {
 
                 <RepositoryTour/>
 
-                {/*TODO this doesn't actually work because the iframes aren't */}
-                {/*expanded properly I think. */}
+                <HashRouter hashType="noslash">
 
-                <TabNav addTabBinder={NULL_FUNCTION}
-                        initialTabs={[
-                            {
-                                title: "Repository",
-                                content: <div>
+                    <Switch>
+                        <Route exact path='/(logout|overview|login|configured|invite|premium)?' render={renderDocRepoApp}/>
+                        <Route exact path='/annotations' render={renderAnnotationRepoApp}/>
+                        <Route exact path='/whats-new' render={renderWhatsNew}/>
+                        <Route exact path='/community' render={renderCommunity}/>
+                        <Route exact path='/stats' render={renderStats}/>
+                        <Route exact path='/logs' render={renderLogs}/>
+                        <Route exact path='/editors-picks' render={editorsPicks}/>
+                    </Switch>
 
-                                    <HashRouter hashType="noslash">
-
-                                        <Switch>
-                                            <Route exact path='/(logout|overview|login|configured|invite|premium)?' render={renderDocRepoApp}/>
-                                            <Route exact path='/annotations' render={renderAnnotationRepoApp}/>
-                                            <Route exact path='/whats-new' render={renderWhatsNew}/>
-                                            <Route exact path='/community' render={renderCommunity}/>
-                                            <Route exact path='/stats' render={renderStats}/>
-                                            <Route exact path='/logs' render={renderLogs}/>
-                                            <Route exact path='/editors-picks' render={editorsPicks}/>
-                                        </Switch>
-
-                                    </HashRouter>
-
-                                </div>
-                            },
-                            {
-                                title: "Example Tab 1",
-                                content: "https://www.msnbc.com"
-                            },
-                            {
-                                title: "Example Tab 2",
-                                content: "https://reddit.com"
-                            }
-                        ]}/>
-
-                {/*<HashRouter hashType="noslash">*/}
-
-                    {/*<Switch>*/}
-                        {/*<Route exact path='/(logout|overview|login|configured|invite|premium)?' render={renderDocRepoApp}/>*/}
-                        {/*<Route exact path='/annotations' render={renderAnnotationRepoApp}/>*/}
-                        {/*<Route exact path='/whats-new' render={renderWhatsNew}/>*/}
-                        {/*<Route exact path='/community' render={renderCommunity}/>*/}
-                        {/*<Route exact path='/stats' render={renderStats}/>*/}
-                        {/*<Route exact path='/logs' render={renderLogs}/>*/}
-                        {/*<Route exact path='/editors-picks' render={editorsPicks}/>*/}
-                    {/*</Switch>*/}
-
-                {/*</HashRouter>*/}
+                </HashRouter>
 
                 <HashRouter hashType="noslash">
 
