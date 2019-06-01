@@ -3,6 +3,31 @@ import {Optional} from './ts/Optional';
 
 export class Arrays {
 
+
+    /**
+     * Create a new array replacing any value that matches the matcher and keep
+     * the original order.
+     */
+    public static replace<T>(values: ReadonlyArray<T>,
+                             replacement: T,
+                             matcher: (value: T) => boolean): ReadonlyArray<T> {
+
+        const result: T[] = [];
+
+        for (let current of values) {
+
+            if (matcher(current)) {
+                current = replacement;
+            }
+
+            result.push(current);
+
+        }
+
+        return result;
+
+    }
+
     public static first<T>(values: ReadonlyArray<T>): T | undefined {
 
         if (values.length === 0) {

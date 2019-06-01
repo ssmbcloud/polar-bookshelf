@@ -37,6 +37,7 @@ export class TabBody extends React.Component<IProps, IState> {
                                  nodeintegration
                                  cssWidth={TabStyles.WEBVIEW.width!}
                                  cssHeight={TabStyles.WEBVIEW.height!}
+                                 onTitleUpdated={this.props.onTitleUpdated}
                                  src={tab.content}/>;
 
         } else {
@@ -50,6 +51,7 @@ export class TabBody extends React.Component<IProps, IState> {
 
 interface IProps {
     readonly tab: Tab;
+    readonly onTitleUpdated: (title: string) => void;
 }
 
 interface IState {

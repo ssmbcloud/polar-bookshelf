@@ -17,7 +17,10 @@ export class TabPanes extends React.Component<IProps, IState> {
             {this.props.tabs.map(tab => {
 
                     return <TabPane tabId={tab.id} key={tab.id}>
-                        <TabBody tab={tab}/>
+
+                        <TabBody tab={tab}
+                                 onTitleUpdated={title => this.props.onTitleUpdated(title, tab)}/>
+
                     </TabPane>;
 
                 })
@@ -34,6 +37,8 @@ export class TabPanes extends React.Component<IProps, IState> {
 interface IProps {
     readonly activeTab: number;
     readonly tabs: ReadonlyArray<Tab>;
+    readonly onTitleUpdated: (title: string, tab: Tab) => void;
+
 }
 
 interface IState {

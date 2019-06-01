@@ -173,7 +173,9 @@ export class TabNav extends React.Component<IProps, IState> {
 
                     <NavTabs/>
 
-                    <TabPanes tabs={this.state.tabs} activeTab={this.state.activeTab}/>
+                    <TabPanes tabs={this.state.tabs}
+                              activeTab={this.state.activeTab}
+                              onTitleUpdated={(title, tab) => this.onTitleUpdated(title, tab)}/>
 
             </div>
 
@@ -240,7 +242,6 @@ export class TabNav extends React.Component<IProps, IState> {
             const first = tabs[0];
             const head = Arrays.head(tabs.slice(tabIdx.idx), 2);
 
-            console.log("FIXME: ", {head})
             const next = head.length === 2 ? head[1] : undefined;
 
             return {first, next};
@@ -250,8 +251,6 @@ export class TabNav extends React.Component<IProps, IState> {
         const tabs = dir === 'fwd' ? this.state.tabs : [...this.state.tabs].reverse();
 
         const tabOrder = computeTabOrder(this.state.activeTab, tabs);
-
-        console.log("FIXME ", tabOrder);
 
         if (tabOrder) {
 
@@ -335,6 +334,16 @@ export class TabNav extends React.Component<IProps, IState> {
         if (this.state.activeTab !== tab) {
             this.setState({...this.state, activeTab: tab});
         }
+
+    }
+
+    private onTitleUpdated(title: string, tab: Tab) {
+
+        const newTab = {...tab, title};
+
+        const tabs = Arrays.replace(this.state.tabs, newTab, (current) => current.id === newTab.id);
+
+        this.setState({...this.state, tabs});
 
     }
 
