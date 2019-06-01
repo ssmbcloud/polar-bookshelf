@@ -27,7 +27,8 @@ export class ReactWebview extends React.PureComponent<IProps, any> {
                         nodeintegration={this.props.nodeintegration ? trueAsStr : falseAsStr}
                         style={{
                             width: this.props.cssWidth,
-                            height: this.props.cssHeight
+                            height: this.props.cssHeight,
+                            backgroundColor: '#ffffff'
                         }}
                         src={this.props.src}/>;
 
