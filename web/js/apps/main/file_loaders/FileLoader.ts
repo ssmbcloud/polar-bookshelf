@@ -23,6 +23,6 @@ export abstract class FileLoader {
      * @param path
      * @return
      */
-    public abstract registerForLoad(path: string): Promise<LoadedFile>;
+    public abstract registerForLoad(fingerprint: string, path: string): Promise<LoadedFile>;
 
 }

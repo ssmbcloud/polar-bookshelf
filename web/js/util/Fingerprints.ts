@@ -6,8 +6,8 @@ export class Fingerprints {
     /**
      * Parse the fingerprint from the filename.
      */
-    static fromFilename(filename: string) {
-        let match = filename.match(/-([^-]+)\.[^.]+$/);
+    public static fromFilename(filename: string) {
+        const match = filename.match(/-([^-]+)\.[^.]+$/);
         return notNull(match)[1];
     }
 
@@ -15,11 +15,11 @@ export class Fingerprints {
      * Remove the extension from a file, add the fingerprint, then add the
      * extension again.
      */
-    static toFilename(path: string, fingerprint: string) {
-        let index = path.lastIndexOf(".");
+    public static toFilename(path: string, fingerprint: string) {
+        const index = path.lastIndexOf(".");
 
-        let prefix = path.substring(0,index);
-        let suffix = path.substring(index+1, path.length);
+        const prefix = path.substring(0, index);
+        const suffix = path.substring(index + 1, path.length);
 
         return `${prefix}-${fingerprint}.${suffix}`;
     }
@@ -29,8 +29,8 @@ export class Fingerprints {
      *
      * @param data
      */
-    static create(data: string) {
-        return Hashcodes.create(data).substring(0,20);
+    public static create(data: string) {
+        return Hashcodes.create(data).substring(0, 20);
     }
 
 }

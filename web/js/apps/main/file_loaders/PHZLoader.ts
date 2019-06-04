@@ -23,8 +23,8 @@ export class PHZLoader extends FileLoader {
 
     public async registerForLoad(path: string): Promise<LoadedFile> {
 
-        Preconditions.assertNotNull(this.cacheRegistry);
-        Preconditions.assertNotNull(this.fileRegistry);
+        Preconditions.assertPresent(this.cacheRegistry);
+        Preconditions.assertPresent(this.fileRegistry);
 
         if (LOAD_STRATEGY === 'portable') {
             return this.doPortable(path);

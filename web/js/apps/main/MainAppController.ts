@@ -12,11 +12,11 @@ import {Capture} from '../../capture/Capture';
 import {Directories} from '../../datastore/Directories';
 import {FileImportClient} from '../repository/FileImportClient';
 import {CaptureOpts} from '../../capture/CaptureOpts';
-import {Platform, Platforms} from '../../util/Platforms';
-import MenuItem = Electron.MenuItem;
 import {MainAppExceptionHandlers} from './MainAppExceptionHandlers';
 import {FileLoader} from './file_loaders/FileLoader';
 import {FileImportRequests} from '../repository/FileImportRequests';
+import MenuItem = Electron.MenuItem;
+import {Fingerprints} from "../../util/Fingerprints";
 
 const log = Logger.create();
 
@@ -52,7 +52,8 @@ export class MainAppController {
     public async cmdCaptureWebPageWithBrowser(captureOpts: Partial<CaptureOpts> = {}) {
 
         const captureResult = await Capture.trigger(captureOpts);
-        await this.handleLoadDoc(captureResult.path);
+        const fingerprint = Fingerprints.create(captureResult.path);
+        await this.handleLoadDoc(fingerprint, captureResult.path);
 
     }
 
@@ -166,7 +167,8 @@ export class MainAppController {
     /**
      * The user asked to open a file from the command line or via OS event.
      */
-    public async handleLoadDoc(path: string,
+    public async handleLoadDoc(fingerprint: string,
+                               path: string,
                                newWindow: boolean = true): Promise<BrowserWindow> {
 
         const extraTags = {'type': 'viewer'};
@@ -183,7 +185,7 @@ export class MainAppController {
                 window = BrowserWindow.getFocusedWindow()!;
             }
 
-            return await this.loadDoc(path, window);
+            return await this.loadDoc(fingerprint, path, window);
 
         }, extraTags);
 
@@ -192,13 +194,15 @@ export class MainAppController {
     /**
      * Load the given PDF file in the given target window.
      */
-    public async loadDoc(path: string, targetWindow: BrowserWindow): Promise<BrowserWindow> {
+    public async loadDoc(fingerprint: string,
+                         path: string,
+                         targetWindow: BrowserWindow): Promise<BrowserWindow> {
 
         if (!targetWindow) {
             throw new Error("No target window given");
         }
 
-        const loadedFile = await this.fileLoader.registerForLoad(path);
+        const loadedFile = await this.fileLoader.registerForLoad(fingerprint, path);
 
         log.info("Loading webapp at: " + loadedFile.webResource);
 
