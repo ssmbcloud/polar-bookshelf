@@ -64,6 +64,8 @@ export class PHZLoader extends FileLoader {
 
     private async doElectron(path: string) {
 
+        // FIXME: remove this as it is no longer necessary.
+
         const filename = FilePaths.basename(path);
 
         // register the phz.  the cache interceptor should do the rest.
