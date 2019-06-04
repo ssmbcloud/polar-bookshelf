@@ -3,6 +3,7 @@ import {keccak256} from 'js-sha3';
 import uuid from 'uuid';
 import {InputSource} from './util/input/InputSource';
 import {InputData, InputSources} from './util/input/InputSources';
+import {Hashcode} from './metadata/Hashcode';
 
 // TODO: migrate this to use types.
 const base58check = require("base58check");
@@ -93,6 +94,14 @@ export class Hashcodes {
      */
     public static createRandomID(len = 10) {
         return this.createID({uuid: uuid.v4()}, len);
+    }
+
+    /**
+     * Convert the hashcode
+     * @param hashcode
+     */
+    public static toKey(hashcode: Hashcode) {
+        return `${hashcode.alg}+${hashcode.enc}@${hashcode.data}`;
     }
 
 }

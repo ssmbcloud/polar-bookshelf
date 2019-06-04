@@ -98,6 +98,7 @@ export class PDFImporter {
      *                 path information.  This is needed because blob URLs might
      *                 not actually have the full metadata we need that the
      *                 original input URL has given us.
+     * @param opts Options for importing the PDF
      */
     public async importFile(docPath: string,
                             basename: string,
@@ -128,32 +129,52 @@ export class PDFImporter {
 
         const persistenceLayer = this.persistenceLayerProvider.get();
 
-        if (await persistenceLayer.contains(pdfMeta.fingerprint)) {
+        // TODO: this is not particularly efficient to create the hashcode
+        // first, then copy the bytes to the target location.  It would be
+        // better, locally, copy and compute the hash on copy but we would have
+        // to rename it and that's not an operation I want to support in the
+        // datastore. This could be optimized but wait until people complain
+        // about it as it's probably premature at this point.
 
-            log.warn(`File already present in datastore: fingerprint=${pdfMeta.fingerprint}: ${docPath}`);
+        const fileHashMeta = await PDFImporter.computeHashPrefix(docPath);
 
-            const docMeta = await persistenceLayer.getDocMeta(pdfMeta.fingerprint);
+        const fingerprints = {
+            primary: Hashcodes.toKey(fileHashMeta.hashcode),
+            secondary: pdfMeta.fingerprint
+        };
 
-            if (docMeta) {
+        for (const fingerprint of Object.values(fingerprints)) {
 
-                if (docMeta.docInfo.filename) {
+            // TODO/FIXME: it's slow to do a contains and then a getDocMeta.
+            // Just do a getDocMeta
+            if (await persistenceLayer.contains(pdfMeta.fingerprint)) {
 
-                    // return the existing doc meta information.
+                log.warn(`File already present in datastore: fingerprint=${pdfMeta.fingerprint}: ${docPath}`);
 
-                    const backendFileRef = BackendFileRefs.toBackendFileRef(docMeta);
+                const docMeta = await persistenceLayer.getDocMeta(pdfMeta.fingerprint);
 
-                    const basename = FilePaths.basename(docMeta.docInfo.filename);
-                    return Optional.of({
-                        basename,
-                        docInfo: docMeta.docInfo,
-                        backendFileRef: backendFileRef!
-                    });
+                if (docMeta) {
+
+                    if (docMeta.docInfo.filename) {
+
+                        // return the existing doc meta information.
+
+                        const backendFileRef = BackendFileRefs.toBackendFileRef(docMeta);
+
+                        const basename = FilePaths.basename(docMeta.docInfo.filename);
+                        return Optional.of({
+                            basename,
+                            docInfo: docMeta.docInfo,
+                            backendFileRef: backendFileRef!
+                        });
+
+                    }
 
                 }
 
+                return Optional.empty();
             }
 
-            return Optional.empty();
         }
 
         // create a default title from the path which is used as sometimes the
@@ -164,18 +185,6 @@ export class PDFImporter {
         }
 
         const defaultTitle = basename || "";
-
-        // TODO: this is not particularly efficient to create the hashcode
-        // first, then copy the bytes to the target location.  It would be
-        // better, locally, copy and compute the hash on copy but we would have
-        // to rename it and that's not an operation I want to support in the
-        // datastore. This could be optimized but wait until people complain
-        // about it as it's probably premature at this point.
-
-        // TODO(webapp): this doesn't work either becasue it assumes that we can
-        // easily and cheaply read from the URL / blob URL but I guess that's
-        // true in this situation though it's assuming a FILE and not a blob URL
-        const fileHashMeta = await PDFImporter.computeHashPrefix(docPath);
 
         const filename = `${fileHashMeta.hashPrefix}-` + DatastoreFiles.sanitizeFileName(basename!);
 
@@ -199,9 +208,11 @@ export class PDFImporter {
 
         };
 
+        const fingerprint = fingerprints.primary;
+
         const binaryFileData: BinaryFileData = await toBinaryFileData();
 
-        const docMeta = DocMetas.create(pdfMeta.fingerprint, pdfMeta.nrPages, filename);
+        const docMeta = DocMetas.create(fingerprint, pdfMeta.nrPages, filename);
 
         docMeta.docInfo.title = Optional.of(pdfMeta.title)
                                         .getOrElse(defaultTitle);
@@ -209,11 +220,7 @@ export class PDFImporter {
         docMeta.docInfo.description = pdfMeta.description;
         docMeta.docInfo.doi = pdfMeta.doi;
 
-        docMeta.docInfo.hashcode = {
-            enc: HashEncoding.BASE58CHECK,
-            alg: HashAlgorithm.KECCAK256,
-            data: fileHashMeta.hashcode
-        };
+        docMeta.docInfo.hashcode = fileHashMeta.hashcode;
 
         const fileRef = {
             name: filename,
@@ -226,7 +233,7 @@ export class PDFImporter {
             ...fileRef
         };
 
-        await persistenceLayer.write(pdfMeta.fingerprint, docMeta, {writeFile});
+        await persistenceLayer.write(fingerprint, docMeta, {writeFile});
 
         const backendFileRef = BackendFileRefs.toBackendFileRef(docMeta);
 
@@ -241,14 +248,7 @@ export class PDFImporter {
     public static async computeHashcode(docPath: string): Promise<Hashcode> {
 
         const fileHashMeta = await PDFImporter.computeHashPrefix(docPath);
-
-        const hashcode: Hashcode = {
-            enc: HashEncoding.BASE58CHECK,
-            alg: HashAlgorithm.KECCAK256,
-            data: fileHashMeta.hashcode
-        };
-
-        return hashcode;
+        return fileHashMeta.hashcode;
 
     }
 
@@ -256,8 +256,15 @@ export class PDFImporter {
 
         const inputSource = await InputSources.ofValue(docPath);
 
-        const hashcode = await Hashcodes.createFromInputSource(inputSource);
-        const hashPrefix = hashcode.substring(0, 10);
+        const hash = await Hashcodes.createFromInputSource(inputSource);
+
+        const hashcode: Hashcode = {
+            enc: HashEncoding.BASE58CHECK,
+            alg: HashAlgorithm.KECCAK256,
+            data: hash
+        };
+
+        const hashPrefix = hash.substring(0, 10);
 
         return { hashcode, hashPrefix };
 
@@ -292,9 +299,15 @@ export interface ImportedFile {
 }
 
 interface FileHashMeta {
+
+    /**
+     * Used to make the filename unique on import so that if we attempt to
+     * import something generic like 'default.pdf' we make it unique based on
+     * the content.
+     */
     readonly hashPrefix: string;
 
-    readonly hashcode: string;
+    readonly hashcode: Hashcode;
 }
 
 interface PDFImportOpts {
