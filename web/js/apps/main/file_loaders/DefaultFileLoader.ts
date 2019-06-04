@@ -24,12 +24,12 @@ export class DefaultFileLoader extends FileLoader {
         this.phzLoader = new PHZLoader(cacheRegistry, fileRegistry);
     }
 
-    public async registerForLoad(path: string): Promise<LoadedFile> {
+    public async registerForLoad(fingerprint: string, path: string): Promise<LoadedFile> {
 
         if (FilePaths.hasExtension(path, "pdf")) {
-            return this.pdfLoader.registerForLoad(path);
+            return this.pdfLoader.registerForLoad(fingerprint, path);
         } else if (FilePaths.hasExtension(path, "phz")) {
-            return this.phzLoader.registerForLoad(path);
+            return this.phzLoader.registerForLoad(fingerprint, path);
         } else {
             throw new Error("Unable to handle file: " + path);
         }

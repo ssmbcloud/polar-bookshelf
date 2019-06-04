@@ -12,6 +12,7 @@ import {Directories} from '../../datastore/Directories';
 import {CacheRegistry} from '../../backend/proxyserver/CacheRegistry';
 import {PHZLoader} from "../../apps/main/file_loaders/PHZLoader";
 import {FileRegistry} from '../../backend/webserver/FileRegistry';
+import {Fingerprints} from "../../util/Fingerprints";
 
 const log = Logger.create();
 
@@ -134,7 +135,8 @@ export class CaptureController {
      */
     private async loadPHZ(webContents: Electron.WebContents, path: string) {
 
-        const loadedFile = await this.phzLoader.registerForLoad(path);
+        const fingerprint = Fingerprints.fromPath(path);
+        const loadedFile = await this.phzLoader.registerForLoad(fingerprint, path);
 
         log.debug(`Loading PHZ URL via: `, loadedFile.webResource);
 

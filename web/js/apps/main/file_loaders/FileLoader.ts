@@ -20,8 +20,6 @@ export abstract class FileLoader {
      * Compute a URL to load a file in the UI a PHZ file and registers it
      * with the CacheRegistry so it can be loaded properly.
      *
-     * @param path
-     * @return
      */
     public abstract registerForLoad(fingerprint: string, path: string): Promise<LoadedFile>;
 

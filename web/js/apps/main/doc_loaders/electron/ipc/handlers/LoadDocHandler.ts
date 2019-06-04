@@ -26,8 +26,9 @@ export class LoadDocHandler  extends IPCHandler<LoadDocRequest> {
         // TODO(webapp): the LoadDocRequest should use a fingerprint and we
         // should get some form of documentURL from the datastore.
         const path = FilePaths.join(this.directories.stashDir, loadDocRequest.backendFileRef.name);
+        const {fingerprint} = loadDocRequest;
 
-        await this.mainAppController.handleLoadDoc(path, loadDocRequest.newWindow);
+        await this.mainAppController.handleLoadDoc(fingerprint, path, loadDocRequest.newWindow);
 
     }
 

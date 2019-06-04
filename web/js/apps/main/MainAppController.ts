@@ -52,7 +52,7 @@ export class MainAppController {
     public async cmdCaptureWebPageWithBrowser(captureOpts: Partial<CaptureOpts> = {}) {
 
         const captureResult = await Capture.trigger(captureOpts);
-        const fingerprint = Fingerprints.create(captureResult.path);
+        const fingerprint = Fingerprints.fromPath(captureResult.path);
         await this.handleLoadDoc(fingerprint, captureResult.path);
 
     }

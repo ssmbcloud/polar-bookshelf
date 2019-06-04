@@ -42,8 +42,10 @@ export class BrowserDocLoader implements IDocLoader {
 
                     const fileName = backendFileRef.name;
 
+                    const {fingerprint} = loadDocRequest;
+
                     if (FilePaths.hasExtension(fileName, "pdf")) {
-                        return PDFLoader.createViewerURL(datastoreFile.url, backendFileRef.name);
+                        return PDFLoader.createViewerURL(fingerprint, datastoreFile.url, backendFileRef.name);
                     } else if (FilePaths.hasExtension(fileName, "phz")) {
                         return PHZLoader.createViewerURL(datastoreFile.url, backendFileRef.name);
                     } else {

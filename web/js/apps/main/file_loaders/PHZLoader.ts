@@ -21,7 +21,7 @@ export class PHZLoader extends FileLoader {
         super();
     }
 
-    public async registerForLoad(path: string): Promise<LoadedFile> {
+    public async registerForLoad(fingerprint: string, path: string): Promise<LoadedFile> {
 
         Preconditions.assertPresent(this.cacheRegistry);
         Preconditions.assertPresent(this.fileRegistry);
