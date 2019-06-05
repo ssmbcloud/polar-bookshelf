@@ -2,6 +2,7 @@ import {notNull, Preconditions} from '../Preconditions';
 import {Elements} from '../util/Elements';
 import {DocDetail} from '../metadata/DocDetail';
 import {IDimensions} from '../util/Dimensions';
+import {Optional} from "../util/ts/Optional";
 
 /**
  * Get the proper docFormat to work with.
@@ -95,7 +96,14 @@ export abstract class DocFormat {
     /**
      * Get the current doc fingerprint or null if it hasn't been loaded yet.
      */
-    public abstract currentDocFingerprint(): string | undefined;
+
+    /**
+     * Get the current doc fingerprint or null if it hasn't been loaded yet.
+     */
+    public currentDocFingerprint(): string | undefined {
+        const url = new URL(document.location.href);
+        return Optional.of(url.searchParams.get("fingerprint")).getOrUndefined();
+    }
 
     /**
      * Get the current state of the doc.

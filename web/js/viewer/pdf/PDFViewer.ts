@@ -47,7 +47,7 @@ export class PDFViewer extends Viewer {
     public docDetail(): DocDetail | undefined {
 
         return {
-            fingerprint: this.currentDocFingerprint(),
+            fingerprint: this.currentDocFingerprint()!,
             title: window.PDFViewerApplication.pdfDocument._pdfInfo.title,
             nrPages: window.PDFViewerApplication.pagesCount,
             filename: this.getFilename()
@@ -74,14 +74,8 @@ export class PDFViewer extends Viewer {
      */
     private currentDocFingerprint() {
 
-        if (window.PDFViewerApplication &&
-            window.PDFViewerApplication.pdfDocument &&
-            window.PDFViewerApplication.pdfDocument._pdfInfo &&
-            window.PDFViewerApplication.pdfDocument._pdfInfo.fingerprint != null) {
-
-            return window.PDFViewerApplication.pdfDocument._pdfInfo.fingerprint;
-
-        }
+        const url = new URL(document.location.href);
+        return url.searchParams.get("fingerprint");
 
     }
 
