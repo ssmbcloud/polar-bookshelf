@@ -35,10 +35,13 @@ export class PDFLoader extends FileLoader {
                                   fileURL: string,
                                   filename: string) {
 
-        const fileParam = encodeURIComponent(fileURL);
-        const filenameParam = encodeURIComponent(filename);
+        const params = {
+            file: encodeURIComponent(fileURL),
+            filename: encodeURIComponent(filename),
+            fingerprint: encodeURIComponent(fingerprint)
+        };
 
-        return ResourcePaths.resourceURLFromRelativeURL(`/pdfviewer/web/index.html?file=${fileParam}&filename=${filenameParam}&zoom=page-width`, false);
+        return ResourcePaths.resourceURLFromRelativeURL(`/pdfviewer/web/index.html?file=${params.file}&filename=${params.filename}&fingerprint=${params.fingerprint}&zoom=page-width`, false);
 
     }
 

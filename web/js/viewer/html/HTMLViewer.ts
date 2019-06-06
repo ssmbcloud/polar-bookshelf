@@ -34,7 +34,7 @@ export class HTMLViewer extends Viewer {
 
     private textLayer: HTMLElement = document.createElement('div');
 
-    private htmlFormat: any;
+    private htmlFormat?: HTMLFormat;
 
     private frameResizer?: FrameResizer;
 
@@ -346,8 +346,6 @@ export class HTMLViewer extends Viewer {
         if (!fingerprint) {
             throw new Error("Fingerprint is required");
         }
-
-        this.htmlFormat.setCurrentDocFingerprint(fingerprint);
 
         return docDetail;
 

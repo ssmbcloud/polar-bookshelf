@@ -55,7 +55,7 @@ export class PHZLoader extends FileLoader {
         const params = {
             file: encodeURIComponent(fileURL),
             filename: encodeURIComponent(filename),
-            fingerprint
+            fingerprint: encodeURIComponent(fingerprint)
         };
 
         return ResourcePaths.resourceURLFromRelativeURL(`/htmlviewer/index.html?file=${params.file}&filename=${params.filename}&fingerprint=${params.fingerprint}&zoom=page-width&strategy=${LOAD_STRATEGY}`, false);

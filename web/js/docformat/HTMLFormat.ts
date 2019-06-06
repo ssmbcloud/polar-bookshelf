@@ -1,7 +1,6 @@
-import {DocFormat, DocFormatName, PageDetail} from './DocFormat';
+import {DocFormat, PageDetail} from './DocFormat';
 import {notNull} from '../Preconditions';
 import {Optional} from '../util/ts/Optional';
-import {URLs} from '../util/URLs';
 
 export class HTMLFormat extends DocFormat {
 
@@ -31,30 +30,6 @@ export class HTMLFormat extends DocFormat {
     }
 
     /**
-     * Get the current doc fingerprint or null if it hasn't been loaded yet.
-     */
-    public currentDocFingerprint(): string | undefined {
-
-        const polarFingerprint = this._queryFingerprintElement();
-
-        if (polarFingerprint !== null) {
-            return Optional.of(polarFingerprint.getAttribute("content")!).getOrUndefined();
-        }
-
-        return undefined;
-
-    }
-
-    setCurrentDocFingerprint(fingerprint: string) {
-        const polarFingerprint = this._queryFingerprintElement();
-        polarFingerprint.setAttribute("content", fingerprint);
-    }
-
-    private _queryFingerprintElement(): Element {
-        return notNull(document.querySelector("meta[name='polar-fingerprint']"));
-    }
-
-    /**
      * Get the current state of the doc.
      */
     public currentState() {
@@ -64,11 +39,6 @@ export class HTMLFormat extends DocFormat {
             currentPageNumber: 1,
         };
 
-    }
-
-    textHighlightOptions() {
-        return {
-        };
     }
 
     public currentScale() {

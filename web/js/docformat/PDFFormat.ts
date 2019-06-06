@@ -12,24 +12,6 @@ export class PDFFormat extends DocFormat {
     }
 
     /**
-     * Get the current doc fingerprint or null if it hasn't been loaded yet.
-     */
-    public currentDocFingerprint(): string | undefined {
-
-        if (window.PDFViewerApplication &&
-            window.PDFViewerApplication.pdfDocument &&
-            window.PDFViewerApplication.pdfDocument._pdfInfo &&
-            window.PDFViewerApplication.pdfDocument._pdfInfo.fingerprint != null) {
-
-            return Optional.of(window.PDFViewerApplication.pdfDocument._pdfInfo.fingerprint).getOrUndefined();
-
-        }
-
-        return undefined;
-
-    }
-
-    /**
      * Get the current state of the doc.
      */
     public currentState(): CurrentDocState {

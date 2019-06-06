@@ -150,6 +150,8 @@ export class WebController extends Controller {
 
         const currentDocFingerprint = this.docFormat.currentDocFingerprint();
 
+        console.log("FIXME: currentDocFingerprint: ", currentDocFingerprint);
+
         if (currentDocFingerprint !== undefined && currentDocFingerprint !== this.docFingerprint) {
 
             log.info("controller: New document loaded: " + eventName);
