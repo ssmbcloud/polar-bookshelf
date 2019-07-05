@@ -44,6 +44,8 @@ export class TraceEvent {
 
     constructor(opts: any) {
 
+        console.log("FIXME: TraceEvent constructed with: ", opts)
+
         this.path = opts.path;
         this.mutationType = opts.mutationType;
         this.target = opts.target;

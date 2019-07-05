@@ -358,6 +358,55 @@ describe('Proxies', function() {
 
     });
 
+    describe('deletes', function() {
+
+        it("idempotent delete", function() {
+
+            let obj: any = {
+                foo: 'foo',
+            };
+
+            obj = Proxies.create(obj);
+
+            delete obj.foo;
+            delete obj.foo;
+            delete obj.foo;
+            delete obj.foo;
+            delete obj.foo;
+        });
+
+
+        it("double delete with listener", function() {
+
+            let obj: any = {
+                foo: 'foo',
+            };
+
+            // note that the second time we are fired there is NO record
+            obj = Proxies.create(obj, traceEvent => {
+                console.log(traceEvent);
+            });
+
+            delete obj.foo;
+            delete obj.foo;
+        });
+
+        it("double proxies", function() {
+
+            let obj: any = {
+                foo: 'foo',
+            };
+
+            obj = Proxies.create(obj);
+            Proxies.create(obj);
+
+            delete obj.foo;
+            delete obj.foo;
+        });
+
+    });
+
+
     describe('deep copy', function() {
 
 
@@ -388,11 +437,9 @@ describe('Proxies', function() {
 
             assert.equal(2, mutations.length);
 
-
         });
 
     });
-
 
     describe('paths', function() {
 

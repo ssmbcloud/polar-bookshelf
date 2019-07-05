@@ -225,6 +225,11 @@ export class AnnotationSidebar extends React.Component<IProps, IState> {
         new CommentModel().registerListener(docMeta, annotationEvent => {
 
             const comment: Comment = annotationEvent.value || annotationEvent.previousValue;
+
+            if (! comment) {
+                return;
+            }
+
             const childDocAnnotation = DocAnnotations.createFromComment(docMeta,
                                                                         comment,
                                                                         annotationEvent.pageMeta);

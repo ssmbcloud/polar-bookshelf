@@ -115,6 +115,7 @@ export class DefaultDocAnnotation implements DocAnnotation {
     }
 
     public getChildren(): ReadonlyArray<DocAnnotation> {
+        console.log("FIXME: getAnnotation called again");
         return this.getIndex()._getChildren(this.id);
     }
 

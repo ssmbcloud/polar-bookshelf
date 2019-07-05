@@ -84,8 +84,8 @@ export class ComponentManager {
             log.error("Failed to handle docMeta group group: ", err);
         };
 
-        DocMetaListeners.register(fingerprint, docMetaHandler, errHandler)
-            .catch(err => errHandler(err));
+        // DocMetaListeners.register(fingerprint, docMetaHandler, errHandler)
+        //     .catch(err => errHandler(err));
 
     }
 

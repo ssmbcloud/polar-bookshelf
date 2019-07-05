@@ -25,6 +25,8 @@ export class DocMetaListener {
 
     private groupDocMonitors  = new Set<DocIDStr>();
 
+    private groupDocMonitors2: string[] = [];
+
     // the current groups being monitored
     private monitoredGroups = new Set<GroupIDStr>();
 
@@ -52,6 +54,8 @@ export class DocMetaListener {
     }
 
     public onSnapshotForUserGroup(userGroup: UserGroup | undefined) {
+
+        console.log("FIXME680");
 
         if (! userGroup) {
             return;
@@ -86,6 +90,7 @@ export class DocMetaListener {
     }
 
     public onSnapshotForGroupDocs(groupDocChanges: ReadonlyArray<DocumentChange<GroupDoc>>) {
+        console.log("FIXME681");
 
         for (const groupDocChange of groupDocChanges) {
 
@@ -108,6 +113,8 @@ export class DocMetaListener {
 
         const groupDoc = groupDocChange.value;
 
+        console.log("FIXME681, groupDoc ", groupDoc)
+
         const {docID, profileID} = groupDoc;
 
         if (profileID === this.profileID) {
@@ -115,13 +122,35 @@ export class DocMetaListener {
             return;
         }
 
+        console.log("FIXME682: goign to handle it now ", groupDoc)
+
         if (! this.groupDocMonitors.has(docID)) {
 
-            // start listening to snapshots on this docID
-            await DocMetaRecords.onSnapshot(docID,
-                                            docMetaRecord => this.onSnapshotForDocMetaRecord(groupDoc, docMetaRecord));
+            const handler = async () => {
 
-            this.groupDocMonitors.add(docID);
+                // FIXME: this doesn't seem to be working and the groupDocMonitors doesn't seem to be getting updated
+
+                // FIXME: I think we're getting two document records... one cache and one live due to this issue
+
+                console.log("FIXME 668: groupDocMonitors", this.groupDocMonitors);
+                console.log("FIXME 669: groupDocMonitors2", this.groupDocMonitors2);
+
+                console.log("FIXME670: going to push: " + docID);
+
+                // add it before we try collect snapshots because we await
+                this.groupDocMonitors.add(docID);
+                this.groupDocMonitors2.push(docID);
+
+                console.log("FIXME 671: groupDocMonitors", this.groupDocMonitors);
+                console.log("FIXME 672: groupDocMonitors2", this.groupDocMonitors2);
+
+                // start listening to snapshots on this docID
+                await DocMetaRecords.onSnapshot(docID,
+                    docMetaRecord => this.onSnapshotForDocMetaRecord(groupDoc, docMetaRecord));
+
+            };
+
+            await handler();
 
         }
 
@@ -129,6 +158,8 @@ export class DocMetaListener {
 
     public onSnapshotForDocMetaRecord(groupDoc: GroupDoc,
                                       docMetaRecord: DocMetaRecord | undefined) {
+
+        console.log("FIXME:666 got onSnapshotForDocMetaRecord: ", groupDoc);
 
         this.handleDocMetaRecord(groupDoc, docMetaRecord)
             .catch(err => this.errHandler(err));
@@ -157,6 +188,7 @@ export class DocMetaListener {
                 return result;
             }
 
+            console.log("FIXME666: creating proxy");
             return Proxies.create(result);
 
         };
@@ -166,6 +198,8 @@ export class DocMetaListener {
         await DocMetaRecords.applyAuthorsFromGroupDoc(curr, groupDoc);
 
         if (prev) {
+
+            console.log("FIXME doing merge update");
             // now merge the metadata so we get our events fired.
             DocMetaRecords.mergeDocMetaUpdate(curr, prev);
         } else {
@@ -187,6 +221,8 @@ export class DocMetaListeners {
                                  docMetaHandler: (docMeta: DocMeta, groupDoc: GroupDoc) => void,
                                  errHandler: (err: Error) => void) {
 
+        console.log("FIXME677");
+
         const profileOwner = await ProfileOwners.get();
 
         if (! profileOwner) {
@@ -207,11 +243,17 @@ interface StringDict<T> {
 
 class StringDicts {
 
-    public static merge<T>(source: StringDict<T>, target: StringDict<T>) {
+    public static merge<T>(source: StringDict<T>, target: StringDict<T>, type: string) {
+
+        console.log("FIXME: ======== merging type: " + type);
 
         // *** delete excess in the target that were deleted in the source
 
         const deletable = SetArrays.difference(Object.keys(target), Object.keys(source));
+
+        if (deletable.length > 0) {
+            console.log("FIXME deletable: " + deletable.length);
+        }
 
         for (const key of deletable) {
             delete target[key];
@@ -225,8 +267,15 @@ class StringDicts {
         // *** copy new keys into the target
         const copyable = SetArrays.difference(Object.keys(source), Object.keys(target));
 
+        if (copyable.length > 0) {
+            console.log("FIXME copyable: " + copyable.length);
+        }
+
         for (const key of copyable) {
+            console.log("FIXME going to copy: ", source[key]);
+
             target[key] = source[key];
+
         }
 
     }
@@ -252,12 +301,12 @@ export class DocMetaRecords {
 
         const mergePageMeta = (source: PageMeta, target: PageMeta) => {
 
-            StringDicts.merge(source.textHighlights, target.textHighlights);
-            StringDicts.merge(source.areaHighlights, target.areaHighlights);
-            StringDicts.merge(source.notes, target.notes);
-            StringDicts.merge(source.comments, target.comments);
-            StringDicts.merge(source.questions, target.questions);
-            StringDicts.merge(source.flashcards, target.flashcards);
+            StringDicts.merge(source.textHighlights, target.textHighlights, "text-highlights");
+            StringDicts.merge(source.areaHighlights, target.areaHighlights, "area-highlights");
+            StringDicts.merge(source.notes, target.notes, "notes");
+            StringDicts.merge(source.comments, target.comments, "comments");
+            StringDicts.merge(source.questions, target.questions, "questions");
+            StringDicts.merge(source.flashcards, target.flashcards, "flashcards");
 
         };
 
