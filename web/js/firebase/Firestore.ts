@@ -1,7 +1,8 @@
-import * as firebase from './lib/firebase';
+import * as firebase from 'firebase';
 import {RendererAnalytics} from '../ga/RendererAnalytics';
 import {AsyncProviders} from '../util/Providers';
 import {Firebase} from './Firebase';
+import {Browsers} from "./Browsers";
 
 const tracer = RendererAnalytics.createTracer('firestore');
 
@@ -31,11 +32,17 @@ export class Firestore {
 
             if (opts.enablePersistence) {
 
-                // TODO: this seems super slow and not sure why.  The tab sync
-                // seems to not impact performance at all.
-                await tracer.traceAsync('enablePersistence', async () => {
-                    await result.enablePersistence({ experimentalTabSynchronization: true });
-                });
+                if (Browsers.hasLocalStorage()) {
+
+                    // TODO: this seems super slow and not sure why.  The tab sync
+                    // seems to not impact performance at all.
+                    await tracer.traceAsync('enablePersistence', async () => {
+                        await result.enablePersistence({ experimentalTabSynchronization: true });
+                    });
+
+                }
+
+
             }
 
             return result;

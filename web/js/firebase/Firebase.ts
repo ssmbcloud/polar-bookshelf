@@ -1,4 +1,4 @@
-import * as firebase from './lib/firebase';
+import * as firebase from 'firebase';
 import {Preconditions} from '../Preconditions';
 import {Logger} from '../logger/Logger';
 
@@ -36,6 +36,10 @@ export class Firebase {
      * Perform init of Firebase with our auth credentials.
      */
     public static init(): firebase.app.App {
+
+        if (! firebase) {
+            throw new Error("No firebase lib");
+        }
 
         if (this.app) {
             return this.app;
