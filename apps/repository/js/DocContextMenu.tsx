@@ -60,7 +60,6 @@ export class DocContextMenu extends React.Component<IProps, IState> {
 
 }
 
-
 interface IProps {
     readonly id: string;
     readonly repoDocInfo: RepoDocInfo;

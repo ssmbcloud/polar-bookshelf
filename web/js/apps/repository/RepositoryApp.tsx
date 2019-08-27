@@ -73,7 +73,7 @@ export class RepositoryApp {
         this.repoDocInfoLoader = new RepoDocMetaLoader(this.persistenceLayerManager);
     }
 
-    public async start() {
+    public async start(renderer: (element: React.ReactElement<any>) => void = defaultRenderer) {
 
         log.info("Running with Polar version: " + Version.get());
 
@@ -138,142 +138,143 @@ export class RepositoryApp {
 
         }
 
-        const renderDocRepoScreen = () => {
-            return (
-                <AuthRequired authStatus={authStatus}>
-                    <DocRepoScreen persistenceLayerManager={this.persistenceLayerManager}
-                                        updatedDocInfoEventDispatcher={updatedDocInfoEventDispatcher}
-                                        repoDocMetaManager={this.repoDocInfoManager}
-                                        repoDocMetaLoader={this.repoDocInfoLoader}/>
-                </AuthRequired>
-            );
-        };
+        // const renderDocRepoScreen = () => {
+        //     return (
+        //         <AuthRequired authStatus={authStatus}>
+        //             <DocRepoScreen persistenceLayerManager={this.persistenceLayerManager}
+        //                                 updatedDocInfoEventDispatcher={updatedDocInfoEventDispatcher}
+        //                                 repoDocMetaManager={this.repoDocInfoManager}
+        //                                 repoDocMetaLoader={this.repoDocInfoLoader}/>
+        //         </AuthRequired>
+        //     );
+        // };
 
-        const renderAnnotationRepoScreen = () => {
-            return (
-                <AuthRequired authStatus={authStatus}>
-                    <AnnotationRepoScreen persistenceLayerManager={this.persistenceLayerManager}
-                                               updatedDocInfoEventDispatcher={updatedDocInfoEventDispatcher}
-                                               repoDocMetaManager={this.repoDocInfoManager}
-                                               repoDocMetaLoader={this.repoDocInfoLoader}
-                                               syncBarProgress={syncBarProgress}/>
-                </AuthRequired>
-            );
-        };
+        //
+        // const renderAnnotationRepoScreen = () => {
+        //     return (
+        //         <AuthRequired authStatus={authStatus}>
+        //             <AnnotationRepoScreen persistenceLayerManager={this.persistenceLayerManager}
+        //                                        updatedDocInfoEventDispatcher={updatedDocInfoEventDispatcher}
+        //                                        repoDocMetaManager={this.repoDocInfoManager}
+        //                                        repoDocMetaLoader={this.repoDocInfoLoader}
+        //                                        syncBarProgress={syncBarProgress}/>
+        //         </AuthRequired>
+        //     );
+        // };
 
-        const renderWhatsNewScreen = () => {
-            return ( <WhatsNewScreen persistenceLayerManager={this.persistenceLayerManager}/> );
-        };
+        // const renderWhatsNewScreen = () => {
+        //     return ( <WhatsNewScreen persistenceLayerManager={this.persistenceLayerManager}/> );
+        // };
+        //
+        // const renderCommunityScreen = () => {
+        //     return (
+        //         <AuthRequired authStatus={authStatus}>
+        //             <CommunityScreen persistenceLayerManager={this.persistenceLayerManager}/>
+        //         </AuthRequired>
+        //     );
+        // };
 
-        const renderCommunityScreen = () => {
-            return (
-                <AuthRequired authStatus={authStatus}>
-                    <CommunityScreen persistenceLayerManager={this.persistenceLayerManager}/>
-                </AuthRequired>
-            );
-        };
+        // const renderStatsScreen = () => {
+        //     return (
+        //         <AuthRequired authStatus={authStatus}>
+        //             <StatsScreen persistenceLayerManager={this.persistenceLayerManager}
+        //                               repoDocMetaManager={this.repoDocInfoManager}/>
+        //         </AuthRequired>);
+        // };
+        //
+        // const renderLogsScreen = () => {
+        //     return (
+        //         <AuthRequired authStatus={authStatus}>
+        //             <LogsScreen persistenceLayerManager={this.persistenceLayerManager}/>
+        //         </AuthRequired>
+        //     );
+        // };
+        //
+        // const editorsPicksScreen = () => {
+        //     return (
+        //         <AuthRequired authStatus={authStatus}>
+        //             <EditorsPicksScreen persistenceLayerManager={this.persistenceLayerManager}/>
+        //         </AuthRequired>
+        //         );
+        // };
+        //
+        // const renderCreateGroupScreen = () => {
+        //
+        //     return (
+        //         <AuthRequired authStatus={authStatus}>
+        //             <CreateGroupScreen persistenceLayerManager={this.persistenceLayerManager}
+        //                                    repoDocMetaManager={this.repoDocInfoManager}/>
+        //         </AuthRequired>
+        //     );
+        // };
+        //
+        // const plan = account ? account.plan : 'free';
+        //
+        // const premiumScreen = () => {
+        //     return (<PremiumScreen persistenceLayerManager={this.persistenceLayerManager}
+        //                            plan={plan}
+        //                            userInfo={userInfo.getOrUndefined()}/>);
+        // };
+        //
+        // const supportScreen = () => {
+        //     return (<SupportScreen persistenceLayerManager={this.persistenceLayerManager}
+        //                            plan={plan}/>);
+        // };
+        //
+        // const renderGroupScreen = () => {
+        //     return (<GroupScreen persistenceLayerManager={this.persistenceLayerManager}/>);
+        // };
+        //
+        // const renderGroupsScreen = () => {
+        //     return (<GroupsScreen persistenceLayerManager={this.persistenceLayerManager}/>);
+        // };
+        //
+        // const renderGroupHighlightsScreen = () => {
+        //     return (<HighlightsScreen persistenceLayerManager={this.persistenceLayerManager}/>);
+        // };
 
-        const renderStatsScreen = () => {
-            return (
-                <AuthRequired authStatus={authStatus}>
-                    <StatsScreen persistenceLayerManager={this.persistenceLayerManager}
-                                      repoDocMetaManager={this.repoDocInfoManager}/>
-                </AuthRequired>);
-        };
+        // const onNavChange = () => {
+        //
+        //     try {
+        //
+        //         const url = new URL(document.location!.href);
+        //
+        //         const path = url.pathname + url.hash || "";
+        //         const hostname = url.hostname;
+        //         const title = document.title;
+        //
+        //         log.info("Navigating to: ", { path, hostname, title });
+        //
+        //         RendererAnalytics.pageview(path, hostname, document.title);
+        //
+        //     } catch (e) {
+        //         log.error("Unable to handle hash change", e);
+        //     }
+        //
+        // };
+        //
+        // // must be called the first time so that we have analytics for the home
+        // // page on first load.
+        // onNavChange();
+        //
+        // window.addEventListener("hashchange", () => onNavChange(), false);
+        //
+        // this.sendAnalytics();
+        //
+        // Accounts.listenForPlanUpgrades()
+        //     .catch(err => log.error("Unable to listen for plan upgrades: ", err));
 
-        const renderLogsScreen = () => {
-            return (
-                <AuthRequired authStatus={authStatus}>
-                    <LogsScreen persistenceLayerManager={this.persistenceLayerManager}/>
-                </AuthRequired>
-            );
-        };
-
-        const editorsPicksScreen = () => {
-            return (
-                <AuthRequired authStatus={authStatus}>
-                    <EditorsPicksScreen persistenceLayerManager={this.persistenceLayerManager}/>
-                </AuthRequired>
-                );
-        };
-
-        const renderCreateGroupScreen = () => {
-
-            return (
-                <AuthRequired authStatus={authStatus}>
-                    <CreateGroupScreen persistenceLayerManager={this.persistenceLayerManager}
-                                           repoDocMetaManager={this.repoDocInfoManager}/>
-                </AuthRequired>
-            );
-        };
-
-        const plan = account ? account.plan : 'free';
-
-        const premiumScreen = () => {
-            return (<PremiumScreen persistenceLayerManager={this.persistenceLayerManager}
-                                   plan={plan}
-                                   userInfo={userInfo.getOrUndefined()}/>);
-        };
-
-        const supportScreen = () => {
-            return (<SupportScreen persistenceLayerManager={this.persistenceLayerManager}
-                                   plan={plan}/>);
-        };
-
-        const renderGroupScreen = () => {
-            return (<GroupScreen persistenceLayerManager={this.persistenceLayerManager}/>);
-        };
-
-        const renderGroupsScreen = () => {
-            return (<GroupsScreen persistenceLayerManager={this.persistenceLayerManager}/>);
-        };
-
-        const renderGroupHighlightsScreen = () => {
-            return (<HighlightsScreen persistenceLayerManager={this.persistenceLayerManager}/>);
-        };
-
-        const onNavChange = () => {
-
-            try {
-
-                const url = new URL(document.location!.href);
-
-                const path = url.pathname + url.hash || "";
-                const hostname = url.hostname;
-                const title = document.title;
-
-                log.info("Navigating to: ", { path, hostname, title });
-
-                RendererAnalytics.pageview(path, hostname, document.title);
-
-            } catch (e) {
-                log.error("Unable to handle hash change", e);
-            }
-
-        };
-
-        // must be called the first time so that we have analytics for the home
-        // page on first load.
-        onNavChange();
-
-        window.addEventListener("hashchange", () => onNavChange(), false);
-
-        this.sendAnalytics();
-
-        Accounts.listenForPlanUpgrades()
-            .catch(err => log.error("Unable to listen for plan upgrades: ", err));
-
-        ReactDOM.render(
+        renderer(
 
             <div style={{height: '100%'}}>
 
             {/*<PrioritizedSplashes persistenceLayerManager={this.persistenceLayerManager}/>*/}
 
-                <Splashes persistenceLayerManager={this.persistenceLayerManager}/>
+            {/*    <Splashes persistenceLayerManager={this.persistenceLayerManager}/>*/}
 
-                <SyncBar progress={syncBarProgress}/>
+            {/*    <SyncBar progress={syncBarProgress}/>*/}
 
-                <RepositoryTour/>
+            {/*    <RepositoryTour/>*/}
 
                 {/*TODO this doesn't actually work because the iframes aren't */}
                 {/*expanded properly I think. */}
@@ -306,70 +307,68 @@ export class RepositoryApp {
                             {/*}*/}
                         {/*]}/>*/}
 
-                <HashRouter hashType="noslash">
+                {/*<HashRouter hashType="noslash">*/}
 
-                    <Switch>
-                        <Route exact path='/(logout|overview|login|configured|invite|premium)?' render={renderDocRepoScreen}/>
-                        <Route exact path='/annotations' render={renderAnnotationRepoScreen}/>
-                        <Route exact path='/whats-new' render={renderWhatsNewScreen}/>
-                        <Route exact path='/community' render={renderCommunityScreen}/>
-                        <Route exact path='/stats' render={renderStatsScreen}/>
-                        <Route exact path='/logs' render={renderLogsScreen}/>
-                        <Route exact path='/editors-picks' render={editorsPicksScreen}/>
-                        <Route exact path='/plans' render={premiumScreen}/>
-                        <Route exact path='/support' render={supportScreen}/>
+                {/*    <Switch>*/}
+                {/*        <Route exact path='/(logout|overview|login|configured|invite|premium)?' render={renderDocRepoScreen}/>*/}
+                {/*        <Route exact path='/annotations' render={renderAnnotationRepoScreen}/>*/}
+                {/*        <Route exact path='/whats-new' render={renderWhatsNewScreen}/>*/}
+                {/*        <Route exact path='/community' render={renderCommunityScreen}/>*/}
+                {/*        <Route exact path='/stats' render={renderStatsScreen}/>*/}
+                {/*        <Route exact path='/logs' render={renderLogsScreen}/>*/}
+                {/*        <Route exact path='/editors-picks' render={editorsPicksScreen}/>*/}
+                {/*        <Route exact path='/plans' render={premiumScreen}/>*/}
+                {/*        <Route exact path='/support' render={supportScreen}/>*/}
 
-                        <Route path='/group/:group/highlights' render={renderGroupHighlightsScreen}/>
-                        <Route path='/group/' render={renderGroupScreen}/>
+                {/*        <Route path='/group/:group/highlights' render={renderGroupHighlightsScreen}/>*/}
+                {/*        <Route path='/group/' render={renderGroupScreen}/>*/}
 
-                        <Route exact path='/groups' render={renderGroupsScreen}/>
-                        <Route exact path='/groups/create' render={renderCreateGroupScreen}/>
+                {/*        <Route exact path='/groups' render={renderGroupsScreen}/>*/}
+                {/*        <Route exact path='/groups/create' render={renderCreateGroupScreen}/>*/}
 
-                    </Switch>
+                {/*    </Switch>*/}
 
-                </HashRouter>
+                {/*</HashRouter>*/}
 
-                <HashRouter hashType="noslash">
+                {/*<HashRouter hashType="noslash">*/}
 
-                    <Switch>
-                        <Route exact path='/premium' render={premiumScreen}/>
-                    </Switch>
+                {/*    <Switch>*/}
+                {/*        <Route exact path='/premium' render={premiumScreen}/>*/}
+                {/*    </Switch>*/}
 
-                </HashRouter>
+                {/*</HashRouter>*/}
 
 
                 {/*Used for file uploads.  This has to be on the page and can't be*/}
                 {/*selectively hidden by components.*/}
-                <Input type="file"
-                       id="file-upload"
-                       name="file-upload"
-                       accept=".pdf, .PDF"
-                       multiple
-                       onChange={() => this.onFileUpload()}
-                       style={{display: 'none'}}/>
+                {/*<Input type="file"*/}
+                {/*       id="file-upload"*/}
+                {/*       name="file-upload"*/}
+                {/*       accept=".pdf, .PDF"*/}
+                {/*       multiple*/}
+                {/*       onChange={() => this.onFileUpload()}*/}
+                {/*       style={{display: 'none'}}/>*/}
 
-            </div>,
-
-            document.getElementById('root') as HTMLElement
+            </div>
 
         );
-
-        if (authStatus !== 'needs-authentication') {
-
-            this.handleRepoDocInfoEvents();
-
-            await this.repoDocInfoLoader.start();
-
-            new CloudService(this.persistenceLayerManager)
-                .start();
-
-            await this.persistenceLayerManager.start();
-
-            log.info("Started repo doc loader.");
-
-        }
-
-        AppInstance.notifyStarted('RepositoryApp');
+        //
+        // if (authStatus !== 'needs-authentication') {
+        //
+        //     this.handleRepoDocInfoEvents();
+        //
+        //     await this.repoDocInfoLoader.start();
+        //
+        //     new CloudService(this.persistenceLayerManager)
+        //         .start();
+        //
+        //     await this.persistenceLayerManager.start();
+        //
+        //     log.info("Started repo doc loader.");
+        //
+        // }
+        //
+        // AppInstance.notifyStarted('RepositoryApp');
 
     }
 
@@ -513,3 +512,11 @@ export class RepositoryApp {
 
 }
 
+export function defaultRenderer(element: React.ReactElement<any>) {
+
+    ReactDOM.render(
+        element,
+        document.getElementById('root') as HTMLElement
+    );
+
+}

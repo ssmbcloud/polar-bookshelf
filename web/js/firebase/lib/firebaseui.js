@@ -1,2 +1,2 @@
 
-module.exports = window.firebaseui;
+module.exports = typeof window === 'object' ? window.firebaseui : undefined;

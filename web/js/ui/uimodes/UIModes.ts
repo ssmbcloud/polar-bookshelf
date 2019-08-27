@@ -1,3 +1,5 @@
+import {Browsers} from "../../firebase/Browsers";
+
 const UI_MODES: ReadonlyArray<string> = ['light', 'dark'];
 
 export class UIModes {
@@ -6,8 +8,12 @@ export class UIModes {
      * Register myself so that we can enable dark mode when necessary.
      */
     public static register() {
-        const uiMode = this.currentMode();
-        this.toggleMode(uiMode);
+
+        if (Browsers.hasLocalStorage()) {
+            const uiMode = this.currentMode();
+            this.toggleMode(uiMode);
+        }
+
     }
 
     private static currentMode(): UIMode {
@@ -18,7 +24,6 @@ export class UIModes {
             return <UIMode> uiMode;
         }
 
-        console.warn("FIXME: using default ui mode");
         return "light";
 
     }

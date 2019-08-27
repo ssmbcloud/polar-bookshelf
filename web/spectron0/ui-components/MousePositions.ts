@@ -21,12 +21,16 @@ let mousePosition: MousePosition = {
     clientY: 0
 };
 
-window.addEventListener('mousemove', event => {
+if (typeof window === 'object') {
 
-    // update the mouse position
-    mousePosition = {
-        clientX: event.clientX,
-        clientY: event.clientY
-    };
+    window.addEventListener('mousemove', event => {
 
-});
+        // update the mouse position
+        mousePosition = {
+            clientX: event.clientX,
+            clientY: event.clientY
+        };
+
+    });
+
+}
