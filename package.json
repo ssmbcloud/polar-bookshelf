@@ -169,7 +169,7 @@
     "glyphicons": "~0.2.0",
     "http-proxy-agent": "~2.1.0",
     "http-proxy-middleware": "~0.19.1",
-    "https-proxy-agent": "~2.2.1",
+    "https-proxy-agent": "~2.2.3",
     "injector": "file:./web/injector",
     "inliner": "~1.13.1",
     "interactjs": "^1.4.1",
