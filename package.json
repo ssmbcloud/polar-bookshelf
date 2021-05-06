@@ -225,7 +225,7 @@
     "twitter-text": "~2.0.5",
     "typed-web-workers": "~2.1.1",
     "typemoq": "~2.1.0",
-    "underscore": "~1.9.1",
+    "underscore": "~1.12.1",
     "universal-analytics": "~0.4.20",
     "uuid": "~3.3.2",
     "workbox-cli": "^4.2.0"
